@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Classroom Simulation</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      #left {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 60%;
+        background-color: white;
+      }
+
+      #blackboard {
+        /* position: absolute; */
+        margin: 0 auto;
+        top: 0;
+        height: 10%;
+        width: 40%;
+        background-image: url('blackboard.png');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+
+      #classroom {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        height: 90%;
+        padding: 10px;
+        box-sizing: border-box;
+      }
+
+      .desk {
+        width: calc(10% - 20px);
+        height: calc(7.5% - 20px);
+        margin: 10px;
+        background-image: url('desk.png');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+
+      .desk:nth-child(10n + 1) {
+        margin-left: 0;
+      }
+
+      .desk:nth-child(10n) {
+        margin-right: 0;
+      }
+
+      #right {
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 40%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #1a0b0b;
+      }
+
+      #right p {
+        font-size: 24px;
+        text-align: center;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="left">
+      <div id="blackboard"></div>
+      <div id="classroom">
+        <script>
+            for (var i = 1; i <= 133; i++) {
+              document.write('<div class="desk"></div>');
+            }
+        </script>
+      </div>
+    </div>
+    <div id="right">
+      <p>This is the right side</p>
+    </div>
+    <script>
+        // Read data from the CSV file
+        var csvFile = 'data.csv'; // replace with your file name
+        fetch(csvFile)
+        .then(response => response.text())
+        .then(data => {
+            // Split the CSV file into rows and iterate through each row
+            var rows = data.split('\n');
+            for (var i = 0; i < rows.length; i++) {
+                // Split each row into columns and get the number of desks to darken
+                var cols = rows[i].split(',');
+                var numDesks = parseInt(cols[0]);
+                
+                // Darken the required number of desks
+                var desks = document.getElementsByClassName('desk');
+                for (var j = 0; j < numDesks; j++) {
+                    desks[j].style.backgroundColor = 'black';
+                }
+                
+                // Print the description to the right division
+                var description = cols[1];
+                var rightDiv = document.getElementById('right');
+                rightDiv.innerHTML += '<p>' + description + '</p>';
+                
+                // Wait for 3 seconds before moving to the next row
+                if (i < rows.length - 1) {
+                    setTimeout(function() {
+                        rightDiv.innerHTML = '';
+                    }, 3000);
+                }
+            }
+        });
+    </script>
+    
+  </body>
+</html>

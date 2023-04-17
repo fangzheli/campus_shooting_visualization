@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Animated Classroom</title>
+	<style>
+		canvas {
+			border: 1px solid #000;
+			background-color: #fff;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="canvas" width="600" height="400"></canvas>
+	<div id="narrative"></div>
+	<script>
+		var canvas = document.getElementById("canvas");
+		var context = canvas.getContext("2d");
+		var narrative = document.getElementById("narrative");
+		var desks = [];
+		var crosses = [];
+
+		// Create desks
+		for (var i = 0; i < 10; i++) {
+			var desk = {
+				x: 50 + i * 50,
+				y: 100,
+				width: 30,
+				height: 20
+			};
+			desks.push(desk);
+		}
+
+		// Create crosses on desks
+		for (var i = 0; i < desks.length; i++) {
+			var cross = {
+				x: desks[i].x + desks[i].width / 2,
+				y: desks[i].y + desks[i].height / 2,
+				radius: 5
+			};
+			crosses.push(cross);
+		}
+
+		// Draw classroom and desks
+		function draw() {
+			context.clearRect(0, 0, canvas.width, canvas.height);
+
+			// Draw classroom
+			context.beginPath();
+			context.moveTo(100, 50);
+			context.lineTo(500, 50);
+			context.lineTo(500, 300);
+			context.lineTo(100, 300);
+			context.closePath();
+			context.stroke();
+
+			// Draw desks
+			context.fillStyle = "#aaa";
+			for (var i = 0; i < desks.length; i++) {
+				context.fillRect(desks[i].x, desks[i].y, desks[i].width, desks[i].height);
+			}
+
+			// Draw crosses
+			context.fillStyle = "#f00";
+			for (var i = 0; i < crosses.length; i++) {
+				context.beginPath();
+				context.arc(crosses[i].x, crosses[i].y, crosses[i].radius, 0, 2 * Math.PI);
+				context.fill();
+			}
+		}
+
+		// Animate shot and display narrative
+		function animate() {
+			var duration = 5000; // 5 seconds
+			var startTime = Date.now();
+			var endTime = startTime + duration;
+
+			var x = 100;
+			var y = 50;
+
+			function update() {
+				var now = Date.now();
+				var timeLeft = endTime - now;
+				var progress = 1 - timeLeft / duration;
+
+				x = 100 + progress * 400;
+				y = 50 + progress * 250;
+
+				draw();
+
+				if (timeLeft <= 0) {
+					narrative.innerHTML = "The shot is finished";
+					return;
+				}
+
+				requestAnimationFrame(update);
+			}
+
+			update();
+		}
+
+		// Start animation when page is loaded
+		window.onload = function() {
+			draw();
+			animate();
+		};
+	</script>
+</body>
+</html>
